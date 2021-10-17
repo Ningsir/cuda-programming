@@ -1,3 +1,9 @@
-[submodule "cuda-samples"]
-	path = cuda-samples
+[submodule "third_party/cuda-samples"]
+	path = third_party/cuda-samples
 	url = https://github.com/NVIDIA/cuda-samples.git
+[submodule "third_party/ECE408"]
+	path = third_party/ECE408
+	url = https://github.com/eedalong/ECE408.git
+[submodule "third_party/libwb"]
+	path = third_party/libwb
+	url = https://github.com/abduld/libwb.git
