@@ -3,18 +3,13 @@
 #include <sys/time.h>
 #include <cassert>
 
+#include "utils.h"
+
 #define ARRAY_SIZE 1000000
 #define TOTAL_NUMBER 64
 
 using namespace std;
 
-double getCurrentTime()
-{
-	timeval t;
-	gettimeofday(&t, NULL);
-	return static_cast<double>(t.tv_sec) * 1000 +
-		   static_cast<double>(t.tv_usec) / 1000;
-}
 __global__ void histogramKernel_0(unsigned char *d_hist_data, unsigned int *d_bin_data)
 {
 	int thread_idx = blockIdx.x * blockDim.x + threadIdx.x;

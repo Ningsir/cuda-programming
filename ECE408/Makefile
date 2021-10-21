@@ -12,8 +12,12 @@ wb:
 NVCCFLAGS   := -arch=sm_60
 CCFLAGS     := -std=c++11 -g -G
 
-TARGETS   = mp0
-$(TARGETS): src/$(TARGETS).cu
+mp0: src/mp0.cu
+	mkdir -p $(OUT_DIR)
+	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I ../third_party/libwb/ -lwb -o $(OUT_DIR)/$@.out $<
+
+
+mp1: src/mp1.cu
 	mkdir -p $(OUT_DIR)
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I ../third_party/libwb/ -lwb -o $(OUT_DIR)/$@.out $<
 
