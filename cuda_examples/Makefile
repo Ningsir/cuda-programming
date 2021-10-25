@@ -19,6 +19,12 @@ matrixMul: matrixMul.cu
 convolution: convolution.cu
 	mkdir -p $(OUT_DIR)
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
+sum: sum.cu
+	mkdir -p $(OUT_DIR)
+	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
+sparseMatrixMul: sparseMatrixMul.cu
+	mkdir -p $(OUT_DIR)
+	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
 .PHONY: clean
 clean:
 	rm -rf $(OUT_DIR)
