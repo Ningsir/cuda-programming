@@ -66,6 +66,30 @@ struct Matrix
 			free(data_);
 		}
 	}
+
+	void InitWithMostZero(float zero_rate, int max = 1000)
+	{
+		int data = 0;
+		for (int i = 0; i < row_; i++)
+		{
+			for (int j = 0; j < column_; j++)
+			{
+				data = rand() % max;
+				data_[column_ * i + j] = data < max * zero_rate ? 0 : static_cast<T>(data);
+			}
+		}
+	}
+
+	void InitWithRandom(int max = 1000)
+	{
+		for (int i = 0; i < row_; i++)
+		{
+			for (int j = 0; j < column_; j++)
+			{
+				data_[i * column_ + j] = static_cast<T>(rand() % max);
+			}
+		}
+	}
 };
 template <typename T>
 struct CSR
@@ -80,14 +104,20 @@ struct CSR
 
 	CSR()
 	{
+		row_ptr = NULL;
+		col = NULL;
+		data = NULL;
 	}
 	CSR(unsigned int row, unsigned int data_num)
 	{
 		row_num_ = row;
 		data_num_ = data_num;
 		row_ptr = (unsigned int *)malloc(sizeof(unsigned int) * (row));
+		memset(row_ptr, 0, sizeof(unsigned int) * (row));
 		col = (unsigned int *)malloc(sizeof(unsigned int) * data_num);
+		memset(col, 0, sizeof(unsigned int) * data_num);
 		data = (T *)malloc(sizeof(T) * data_num);
+		memset(data, 0, sizeof(T) * data_num);
 	}
 
 	CSR(const CSR &csr)

@@ -1,4 +1,4 @@
-NVCC          := /usr/bin/nvcc
+NVCC	:= $(shell which nvcc)
 OUT_DIR = $(CURDIR)/bin
 
 # internal flags
@@ -13,18 +13,31 @@ $(TARGETS): $(TARGETS).cu
 	mkdir -p $(OUT_DIR)
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
 
-matrixMul: matrixMul.cu
+matrixMul: examples/matrixMul.cu
 	mkdir -p $(OUT_DIR)
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
-convolution: convolution.cu
+convolution: examples/convolution.cu
 	mkdir -p $(OUT_DIR)
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
-sum: sum.cu
+sum: examples/sum.cu
 	mkdir -p $(OUT_DIR)
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
-sparseMatrixMul: sparseMatrixMul.cu
+sparseMatrixMul: examples/sparseMatrixMul.cu
 	mkdir -p $(OUT_DIR)
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
+triangleCount: examples/triangleCount.cu
+	mkdir -p $(OUT_DIR)
+	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
+kernel.o: src/kernel.cu
+	mkdir -p $(OUT_DIR)
+	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@ -c  $<
+sparse.o: examples/sparseMatrixMul.cu
+	mkdir -p $(OUT_DIR)
+	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@ -c  $<
+sparse: kernel.o sparse.o
+	mkdir -p $(OUT_DIR)
+	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@ bin/kernel.o bin/sparse.o
+
 .PHONY: clean
 clean:
 	rm -rf $(OUT_DIR)

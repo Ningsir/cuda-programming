@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include <cassert>
 
-#include "utils.h"
+#include "common/utils.h"
 
 #define ARRAY_SIZE 1000000
 #define TOTAL_NUMBER 64

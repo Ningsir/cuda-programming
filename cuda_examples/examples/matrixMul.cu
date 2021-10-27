@@ -1,7 +1,8 @@
 #include <iostream>
 #include <assert.h>
 
-#include "utils.h"
+#include "common/utils.h"
+#include "src/kernel.cuh"
 
 using namespace std;
 
@@ -12,20 +13,20 @@ using namespace std;
  * @param B matrix B, size of N x K
  * @param[out] C matrix C, size of M x K
  */
-__global__ void matrixMulKernel(float *A, float *B, float *C, unsigned int M, unsigned int N, unsigned int K)
-{
-	int row = blockDim.x * blockIdx.x + threadIdx.x;
-	int column = blockDim.y * blockIdx.y + threadIdx.y;
-	if (row < M && column < K)
-	{
-		float sum = 0.0;
-		for (int i = 0; i < N; i++)
-		{
-			sum += A[row * N + i] * B[i * K + column];
-		}
-		C[row * K + column] = sum;
-	}
-}
+// __global__ void matrixMulKernel(float *A, float *B, float *C, unsigned int M, unsigned int N, unsigned int K)
+// {
+// 	int row = blockDim.x * blockIdx.x + threadIdx.x;
+// 	int column = blockDim.y * blockIdx.y + threadIdx.y;
+// 	if (row < M && column < K)
+// 	{
+// 		float sum = 0.0;
+// 		for (int i = 0; i < N; i++)
+// 		{
+// 			sum += A[row * N + i] * B[i * K + column];
+// 		}
+// 		C[row * K + column] = sum;
+// 	}
+// }
 
 #define TILE_WIDTH 8
 __global__ void matrixMulKernelWithSharedMem(float *M, float *N, float *P,
@@ -78,7 +79,7 @@ int main()
 	dim3 gridSize((blockSize.x + M - 1) / blockSize.x, (blockSize.y + K - 1) / blockSize.y);
 
 	double t1 = getCurrentTime();
-	matrixMulKernel<<<gridSize, blockSize>>>(A, B, C, M, N, K);
+	matrixMul(gridSize, blockSize, A, B, C, M, N, K);
 	cudaDeviceSynchronize();
 	double t2 = getCurrentTime();
 	matrixMulKernelWithSharedMem<<<gridSize, blockSize>>>(A, B, P, M);

@@ -5,9 +5,11 @@
 
 #include "matrix.h"
 #include "utils.h"
+#include "graph.h"
 
 using namespace std;
-int main()
+
+void testMatrix()
 {
 	srand((unsigned)(time(NULL)));
 	int row = 10000, column = 100;
@@ -18,8 +20,8 @@ int main()
 	{
 		assert(csr.data[i] < max);
 	}
-	Matrix<float> matrix;
-	GenerateMatrix<float>(matrix, row, column);
+	Matrix<float> matrix(row, column);
+	matrix.InitWithRandom(max);
 	for (int i = 0; i < matrix.row_; i++)
 	{
 		for (int j = 0; j < matrix.column_; j++)
@@ -27,5 +29,13 @@ int main()
 			assert(matrix.data_[i * column + j] < max);
 		}
 	}
+}
+void testGraph()
+{
+	CSRGraph<float> graph("/home/xinger/cpp/cuda/cuda-programming/cuda_examples/common/bin/test.txt");
+}
+int main()
+{
+	testGraph();
 	return 0;
 }
