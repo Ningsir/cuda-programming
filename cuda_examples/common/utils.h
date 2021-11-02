@@ -2,22 +2,20 @@
 #define CUDA_EXAMPLES_COMMON_UTILS_H_
 #include <cassert>
 #include <sys/time.h>
-#include <cuda.h>
+#include <string>
+#include <fstream>
 
 #include "matrix.h"
-
-#define checkCudaErrors(ans)                  \
-	{                                         \
-		gpuAssert((ans), __FILE__, __LINE__); \
-	}
-inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort = true)
+void SaveResults(std::string filepath, uint *results, uint n)
 {
-	if (code != cudaSuccess)
-	{
-		fprintf(stderr, "GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
-		if (abort)
-			exit(code);
-	}
+	std::cout << "Saving the results into the following file:\n";
+	std::cout << ">> " << filepath << std::endl;
+	std::ofstream outfile;
+	outfile.open(filepath);
+	for (int i = 0; i < n; i++)
+		outfile << i << " " << results[i] << std::endl;
+	outfile.close();
+	std::cout << "Done saving.\n";
 }
 double getCurrentTime()
 {
