@@ -1,9 +1,10 @@
 NVCC	:= $(shell which nvcc)
+CXX := g++
 OUT_DIR = $(CURDIR)/bin
 
 # internal flags
-NVCCFLAGS   := -arch=sm_60
-CCFLAGS     := -g -G
+NVCCFLAGS   := -arch=sm_60 -G
+CCFLAGS     := -g 
 
 TARGETS   = histogram
 SOURCES = $(shell find -name "*.cu")
@@ -42,6 +43,9 @@ sparse: kernel.o sparse.o
 	mkdir -p $(OUT_DIR)
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@ bin/kernel.o bin/sparse.o
 
+convert: tools/convert.cpp
+	mkdir -p $(OUT_DIR)
+	$(CXX) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
 .PHONY: clean
 clean:
 	rm -rf $(OUT_DIR)
