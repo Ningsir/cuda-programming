@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include "matrix.h"
+
 void SaveResults(std::string filepath, uint *results, uint n)
 {
 	std::cout << "Saving the results into the following file:\n";

@@ -12,17 +12,7 @@
 #include <cuda.h>
 
 #include "matrix.h"
-
-struct Edge
-{
-	unsigned target;
-};
-
-struct WeightEdge
-{
-	unsigned target;
-	float data;
-};
+#include "common/edge.h"
 
 /**
  * The graph is represtented in CSR format and COO format.
@@ -66,10 +56,6 @@ public:
 				row_id[j] = i;
 			}
 		}
-		// for (unsigned i = 0; i < csr.data_num_; i++)
-		// {
-		// 	std::cout << row_id[i] << ", ";
-		// }
 		cudaMemcpy(d_row_id, row_id, sizeof(unsigned) * csr.data_num_, cudaMemcpyHostToDevice);
 		free(row_id);
 	}
@@ -272,58 +258,66 @@ private:
 };
 
 /**
- * @brief 对无权重图进行初始化
+ * @brief 对无权重图进行初始化，顶点编号0~n
  */
 template <>
 void CSRGraph<Edge>::InitGraph()
 {
-	std::ifstream f(filename_, std::ios::in);
-	std::string line;
-	std::stringstream ss;
-	std::map<unsigned, std::list<Edge>> adj_list;
-	// 用于统计顶点的数量
-	std::set<unsigned> set;
-	size_t edge_num = 0;
-	while (std::getline(f, line))
-	{
-		unsigned source, target;
-		ss.str("");
-		ss.clear();
-		ss << line;
-		ss >> source >> target;
-		adj_list[source].push_back({target});
-		set.emplace(source);
-		set.emplace(target);
-		edge_num++;
-	}
+	std::ifstream f(filename_, std::ifstream::binary);
+	f.read((char *)&node_num_, sizeof(unsigned));
+	f.read((char *)&edge_num_, sizeof(size_t));
+	init(node_num_, edge_num_);
+	f.read((char *)row_ptr_, sizeof(unsigned) * (node_num_ + 1));
+	f.read((char *)edge_list_, sizeof(Edge) * (edge_num_));
+	std::cout << "Vertex Num: " << node_num_ << std::endl;
+	std::cout << "Edge Num: " << edge_num_ << std::endl;
 	f.close();
-	std::cout << "Vertex Num: " << set.size() << std::endl;
-	std::cout << "Edge Num: " << edge_num << std::endl;
-	init(set.size(), edge_num);
-	size_t edge_count = 0;
-	row_ptr_[0] = 0;
-	for (unsigned i = 1; i <= set.size(); i++)
-	{
-		if (adj_list.find(i) != adj_list.end())
-		{
-			auto edge_list = adj_list[i];
-			row_ptr_[i] = row_ptr_[i - 1] + edge_list.size();
-			for (auto e : edge_list)
-			{
-				unsigned target = e.target;
-				// 因为文件中的顶点编号从1~n，将其转换成0~n-1
-				edge_list_[edge_count].target = target - 1;
-				edge_count++;
-			}
-		}
-		// 顶点 i 没有出边，顶点i也需要保存在图中
-		else
-		{
-			row_ptr_[i] = row_ptr_[i - 1];
-		}
-	}
-	assert(edge_num == row_ptr_[node_num_]);
-	assert(edge_count == edge_num);
+	// std::string line;
+	// std::stringstream ss;
+	// std::map<unsigned, std::list<Edge>> adj_list;
+	// // 用于统计顶点的数量
+	// std::set<unsigned> set;
+	// size_t edge_num = 0;
+	// while (std::getline(f, line))
+	// {
+	// 	unsigned source, target;
+	// 	ss.str("");
+	// 	ss.clear();
+	// 	ss << line;
+	// 	ss >> source >> target;
+	// 	adj_list[source].push_back({target});
+	// 	set.emplace(source);
+	// 	set.emplace(target);
+	// 	edge_num++;
+	// }
+	// f.close();
+	// std::cout << "Vertex Num: " << set.size() << std::endl;
+	// std::cout << "Edge Num: " << edge_num << std::endl;
+	// init(set.size(), edge_num);
+	// size_t edge_count = 0;
+	// row_ptr_[0] = 0;
+	// for (unsigned i = 0; i < set.size(); i++)
+	// {
+	// 	if (adj_list.find(i) != adj_list.end())
+	// 	{
+	// 		auto edge_list = adj_list[i];
+	// 		row_ptr_[i + 1] = row_ptr_[i] + edge_list.size();
+	// 		for (auto e : edge_list)
+	// 		{
+	// 			unsigned target = e.target;
+	// 			// 因为文件中的顶点编号从1~n，将其转换成0~n-1
+	// 			edge_list_[edge_count].target = target;
+	// 			edge_count++;
+	// 		}
+	// 	}
+	// 	// 顶点 i 没有出边，顶点i也需要保存在图中
+	// 	else
+	// 	{
+	// 		row_ptr_[i + 1] = row_ptr_[i];
+	// 	}
+	// }
+	// assert(edge_num == row_ptr_[node_num_]);
+	// assert(edge_count == edge_num);
 }
 
 /**
