@@ -129,7 +129,7 @@ void triangleCountLaunch(const CSRCOOGraph<float> &graph, unsigned *count, dim3 
 /**
  * @brief bfs
  */
-__global__ void bfsSyncKernel(unsigned *active_nodes, unsigned *row_ptr, Edge *edge_list, bool *visited, bool *next_is_active, unsigned *res, unsigned active_node_nums)
+__global__ void bfsSyncKernel(unsigned *active_nodes, unsigned *row_ptr, Edge *edge_list, bool *visited, unsigned *next_is_active, unsigned *res, unsigned active_node_nums)
 {
 	unsigned tid = blockDim.x * blockIdx.x + threadIdx.x;
 	if (tid < active_node_nums)
@@ -150,7 +150,7 @@ __global__ void bfsSyncKernel(unsigned *active_nodes, unsigned *row_ptr, Edge *e
 			{
 				atomicMin(&res[target], targetDist);
 				visited[target] = true;
-				next_is_active[target] = true;
+				next_is_active[target] = 1;
 				// printf("active node: %d\n", target);
 				// *finished = false;
 			}
