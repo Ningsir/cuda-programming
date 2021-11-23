@@ -9,7 +9,7 @@ using namespace std;
 int main()
 {
 	string filename = "/home/xinger/cpp/cuda/cuda-programming/cuda_examples/common/bin/test.txt";
-	CSRGraph<float> graph(filename);
+	CSRCOOGraph<float> graph(filename);
 
 	unsigned edge_num = graph.GetEdgeNum();
 

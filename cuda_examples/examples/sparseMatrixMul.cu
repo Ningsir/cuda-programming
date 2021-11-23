@@ -4,6 +4,7 @@
 
 #include "common/matrix.h"
 #include "common/utils.h"
+#include "common/cuda_helper.cuh"
 #include "src/kernel.cuh"
 
 using namespace std;
