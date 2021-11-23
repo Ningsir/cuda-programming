@@ -29,6 +29,9 @@ sparseMatrixMul: examples/sparseMatrixMul.cu
 triangleCount: examples/triangleCount.cu
 	mkdir -p $(OUT_DIR)
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
+bandwidthTest: examples/bandwidthTest.cu
+	mkdir -p $(OUT_DIR)
+	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
 
 bfs: examples/bfs.cu
 	mkdir -p $(OUT_DIR)
