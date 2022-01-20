@@ -6,6 +6,7 @@
 #include <list>
 #include <set>
 #include <fstream>
+#include <vector>
 #include <cassert>
 
 #include "common/edge.h"
@@ -78,7 +79,51 @@ void Renumber(std::string filename)
 	}
 	outfile.close();
 }
-
+/**
+ * 将图转化成CSR格式
+ * 
+ * <n>
+   <m>
+   <o0>
+   <o1>
+   ...
+   <o(n-1)>
+   <e0>
+   <e1>
+   ...
+   <e(m-1)>
+ */
+void ConvertGraphToCSR(std::string filename){
+	std::ifstream file(filename, std::ios::in);
+	unsigned u, v;
+	unsigned nodes_num = 0, edges_num = 0;
+	std::map<unsigned, std::vector<unsigned>> adjs;
+	while (file >> u >> v)
+	{
+		adjs[u].push_back(v);
+		edges_num++;
+	}
+	file.close();
+	std::ofstream outfile(filename + "adjs", std::ios::out);
+	outfile << adjs.size() << std::endl;
+	outfile << edges_num << std::endl;
+	// outfile << 0 << std::endl;
+	unsigned cur = 0, next = 0;
+	for (auto &pair : adjs)
+	{
+		outfile << cur + next << std::endl;
+		cur = cur + next;
+		next = pair.second.size();
+	}
+	for (auto &pair : adjs)
+	{
+		for (auto &v : pair.second)
+		{
+			outfile << v << std::endl;
+		}
+	}
+	outfile.close();
+}
 /**
  * @brief 将图转化成二进制格式，节点ID从0开始的图
  * 

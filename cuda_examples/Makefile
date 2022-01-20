@@ -31,11 +31,16 @@ triangleCount: examples/triangleCount.cu
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
 bandwidthTest: examples/bandwidthTest.cu
 	mkdir -p $(OUT_DIR)
-	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
+	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -lcuda -o $(OUT_DIR)/$@.out $<
 
 bfs: examples/bfs.cu
 	mkdir -p $(OUT_DIR)
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
+
+pinned: examples/pinnedMem.cu
+	mkdir -p $(OUT_DIR)
+	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@.out $<
+
 kernel.o: src/kernel.cu
 	mkdir -p $(OUT_DIR)
 	$(NVCC) $(NVCCFLAGS) $(CCFLAGS) -I $(INCLUDES) -o $(OUT_DIR)/$@ -c  $<

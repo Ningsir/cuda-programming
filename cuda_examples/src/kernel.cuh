@@ -161,4 +161,21 @@ __global__ void bfsSyncKernel(unsigned *active_nodes, unsigned *row_ptr, Edge *e
 void bfsSyncLaunch(const CSRGraph<Edge> &graph, unsigned source)
 {
 }
+__global__ void sparseMatrixMulKernel(unsigned int *row_ptr, unsigned int *col_index,
+									  float *values, float *input,
+									  float *output, unsigned int k)
+{
+	int row = blockDim.x * blockIdx.x + threadIdx.x;
+	int col = blockDim.y * blockIdx.y + threadIdx.y;
+
+	int start = row_ptr[row];
+	int end = row_ptr[row + 1];
+
+	float sum = 0.0;
+	for (int i = 0; i < end - start; i++)
+	{
+		sum += values[start + i] * input[col_index[start + i] * k + col];
+	}
+	output[row * k + col] = sum;
+}
 #endif // CUDA_EXAMPLES_KERNEL_KERNEL_H_

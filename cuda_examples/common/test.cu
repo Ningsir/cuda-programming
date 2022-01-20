@@ -32,7 +32,7 @@ void testMatrix()
 }
 void testGraph()
 {
-	CSRGraph<float> graph("/home/xinger/cpp/cuda/cuda-programming/cuda_examples/common/bin/test.txt");
+	CSRCOOGraph<float> graph("/home/xinger/cpp/cuda/cuda-programming/cuda_examples/common/bin/test.txt");
 }
 int main()
 {

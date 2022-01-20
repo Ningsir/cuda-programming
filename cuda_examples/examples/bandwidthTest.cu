@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
+#include <cudaProfiler.h>
 
 // Convenience function for checking CUDA runtime API results
 // can be wrapped around any runtime API call. No-op in release builds.
@@ -95,7 +96,9 @@ int main()
 	printf("Transfer size (MB): %d\n", bytes / (1024 * 1024));
 
 	// perform copies and report bandwidth
+	cuProfilerStart();
 	profileCopies(h_aPageable, h_bPageable, d_a, nElements, "Pageable");
+	cuProfilerStop();
 	profileCopies(h_aPinned, h_bPinned, d_a, nElements, "Pinned");
 
 	printf("\n");

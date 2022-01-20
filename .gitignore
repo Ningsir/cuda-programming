@@ -2,6 +2,7 @@
 bin/
 third_party/
 build/
+data/
 
 # CUDA
 *.i
